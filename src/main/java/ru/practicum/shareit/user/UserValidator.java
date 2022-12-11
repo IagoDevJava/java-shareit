@@ -62,7 +62,7 @@ public class UserValidator {
                 check++;
             }
         }
-        if (check == 0){
+        if (check == 0) {
             log.warn("Такого пользователя нет в базе");
             throw new ValidationException("Такого пользователя нет в базе");
         }

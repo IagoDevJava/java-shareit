@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import ru.practicum.shareit.exception.UserDuplicateException;
 import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 

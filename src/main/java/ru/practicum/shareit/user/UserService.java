@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
@@ -8,53 +7,34 @@ import ru.practicum.shareit.user.model.User;
 import java.util.List;
 
 @Service
-public class UserService {
-    private final UserDao userDao;
-
-    @Autowired
-    public UserService(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
+public interface UserService {
     /**
-     * Создание пользователя
+     * Сохранение пользователя
      */
-    public UserDto addUser(User user) {
-        return userDao.addUser(user);
-    }
+    UserDto saveUser(User user);
 
     /**
      * Обновление пользователя
      */
-    public UserDto updateUser(Long userId, User user) {
-        return userDao.updateUser(userId, user);
-    }
-
-    /**
-     * Получение пользователя по id
-     */
-    public UserDto findUserById(Long userId) {
-        return userDao.getUserDtoById(userId);
-    }
+    UserDto updateUser(Long userId, User user);
 
     /**
      * Получение списка пользователей
      */
-    public List<UserDto> getUsers() {
-        return userDao.getUsers();
-    }
+    List<UserDto> getUsers();
+
+    /**
+     * Получение пользователя по id
+     */
+    UserDto findUserById(Long userId);
 
     /**
      * Удаление всех пользователей
      */
-    public void deleteUsers() {
-        userDao.deleteUsers();
-    }
+    void deleteUsers();
 
     /**
      * Удаление пользователя по id
      */
-    public void deleteUserById(Long userId) {
-        userDao.deleteUserById(userId);
-    }
+    void deleteUserById(Long userId);
 }

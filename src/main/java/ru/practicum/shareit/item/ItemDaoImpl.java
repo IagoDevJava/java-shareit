@@ -9,7 +9,7 @@ import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemMapper;
-import ru.practicum.shareit.user.UserDao;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserValidator;
 
 import java.util.ArrayList;
@@ -19,13 +19,13 @@ import java.util.Optional;
 @Slf4j
 @Component
 public class ItemDaoImpl implements ItemDao {
-    private final UserDao userDao;
+    private final UserRepository userRepository;
     private final List<Item> items = new ArrayList<>();
     private long idItem = 0;
 
     @Autowired
-    public ItemDaoImpl(UserDao userDao) {
-        this.userDao = userDao;
+    public ItemDaoImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     /**
@@ -34,7 +34,7 @@ public class ItemDaoImpl implements ItemDao {
     @Override
     public ItemDto addItem(Long userId, ItemDto itemDto) {
         UserValidator.isValidIdUsers(userId);
-        userDao.getUserDtoById(userId);
+        userRepository.findById(userId);
         if (itemDto != null && userId != 0) {
             ItemValidator.isValidCreateItem(itemDto);
             long thisId = generatedId();

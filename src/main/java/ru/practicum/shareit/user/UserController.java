@@ -12,20 +12,20 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/users")
 public class UserController {
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserServiceImpl userServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
     }
 
     /**
      * Добавление пользователя в БД
      */
     @PostMapping()
-    public UserDto addUser(@RequestBody User user) {
+    public UserDto saveUser(@RequestBody User user) {
         log.info("Добавляем пользователя");
-        return userService.addUser(user);
+        return userServiceImpl.saveUser(user);
     }
 
     /**
@@ -34,7 +34,7 @@ public class UserController {
     @PatchMapping("/{userId}")
     public UserDto updateUser(@PathVariable Long userId, @RequestBody User user) {
         log.info("Обновляем пользователя");
-        return userService.updateUser(userId, user);
+        return userServiceImpl.updateUser(userId, user);
     }
 
     /**
@@ -43,7 +43,7 @@ public class UserController {
     @GetMapping
     public List<UserDto> getUsers() {
         log.info("Получаем список пользователей");
-        return userService.getUsers();
+        return userServiceImpl.getUsers();
     }
 
     /**
@@ -52,7 +52,7 @@ public class UserController {
     @GetMapping("/{userId}")
     public UserDto findUserById(@PathVariable Long userId) {
         log.info("ПОлучаем пользователя по id");
-        return userService.findUserById(userId);
+        return userServiceImpl.findUserById(userId);
     }
 
     /**
@@ -61,7 +61,7 @@ public class UserController {
     @DeleteMapping
     public void deleteUsers() {
         log.info("Удаляем всех пользователей");
-        userService.deleteUsers();
+        userServiceImpl.deleteUsers();
     }
 
     /**
@@ -70,7 +70,7 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public void deleteUserById(@PathVariable Long userId) {
         log.info("Удаляем пользователя по id");
-        userService.deleteUserById(userId);
+        userServiceImpl.deleteUserById(userId);
     }
 
 }

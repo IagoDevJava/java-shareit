@@ -19,7 +19,7 @@ public class ItemRepositoryImpl {
     private final ItemRepository repository;
 
     @Autowired
-    public ItemRepositoryImpl(UserRepository userRepository, @Lazy ItemRepository repository) {
+    public ItemRepositoryImpl(@Lazy ItemRepository repository) {
         this.repository = repository;
     }
 

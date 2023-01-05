@@ -2,11 +2,11 @@ package ru.practicum.shareit.booking;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingMapper;
-import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.exception.BookingNotFoundException;
 import ru.practicum.shareit.exception.OwnerNotFoundException;
 import ru.practicum.shareit.item.ItemRepository;
@@ -21,7 +21,7 @@ public class BookingRepositoryImpl {
     private final ItemRepository itemRepository;
 
     @Autowired
-    public BookingRepositoryImpl(BookingRepository bookingRepository, ItemRepository itemRepository) {
+    public BookingRepositoryImpl(@Lazy BookingRepository bookingRepository, @Lazy ItemRepository itemRepository) {
         this.bookingRepository = bookingRepository;
         this.itemRepository = itemRepository;
     }

@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingMapper;
@@ -15,13 +16,16 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
+@Service
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final BookingRepositoryImpl repositoryImp;
     private final ItemRepository itemRepository;
 
     @Autowired
-    public BookingServiceImpl(BookingRepository bookingRepository, BookingRepositoryImpl repositoryImp, ItemRepository itemRepository) {
+    public BookingServiceImpl(BookingRepository bookingRepository,
+                              BookingRepositoryImpl repositoryImp,
+                              ItemRepository itemRepository) {
         this.bookingRepository = bookingRepository;
         this.repositoryImp = repositoryImp;
         this.itemRepository = itemRepository;

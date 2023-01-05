@@ -3,6 +3,9 @@ package ru.practicum.shareit.item;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.Status;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
@@ -18,12 +21,15 @@ import java.util.Optional;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository repository;
     private final ItemRepositoryImpl itemRepository;
-//    private final BookingRepository bookingRepository;
+    private final BookingRepository bookingRepository;
 
     @Autowired
-    public ItemServiceImpl(ItemRepository repository, ItemRepositoryImpl itemRepository) {
+    public ItemServiceImpl(ItemRepository repository,
+                           ItemRepositoryImpl itemRepository,
+                           BookingRepository bookingRepository) {
         this.repository = repository;
         this.itemRepository = itemRepository;
+        this.bookingRepository = bookingRepository;
     }
 
     /**
@@ -54,13 +60,13 @@ public class ItemServiceImpl implements ItemService {
         Optional<Item> itemById = repository.findById(itemId);
         if (itemById.isPresent()) {
             ItemDto itemDto = ItemMapper.toItemDto(itemById.get());
-//            List<Booking> bookingByItemId = bookingRepository.findBookingByItemId(itemId);
-//            for (Booking booking : bookingByItemId) {
-//                if (booking.getStatus().equals(Status.APPROVED)) {
-//                    itemDto.setStart(booking.getStart());
-//                    itemDto.setEnd(booking.getEnd());
-//                }
-//            }
+            List<Booking> bookingByItemId = bookingRepository.findBookingByItemId(itemId);
+            for (Booking booking : bookingByItemId) {
+                if (booking.getStatus().equals(Status.APPROVED)) {
+                    itemDto.setStart(booking.getStart());
+                    itemDto.setEnd(booking.getEnd());
+                }
+            }
             log.info("Получили вещь № {}", itemId);
             return itemDto;
         } else {
@@ -76,13 +82,13 @@ public class ItemServiceImpl implements ItemService {
         List<Item> itemByOwnerId = repository.findItemByOwnerId(userId);
         List<ItemDto> result = new ArrayList<>();
         for (Item item : itemByOwnerId) {
-//            List<Booking> bookingByItemId = bookingRepository.findBookingByItemId(item.getId());
-//            ItemDto itemDto = ItemMapper.toItemDto(item);
-//            for (Booking booking : bookingByItemId) {
-//                itemDto.setStart(booking.getStart());
-//                itemDto.setEnd(booking.getEnd());
-//            }
-//            result.add(itemDto);
+            List<Booking> bookingByItemId = bookingRepository.findBookingByItemId(item.getId());
+            ItemDto itemDto = ItemMapper.toItemDto(item);
+            for (Booking booking : bookingByItemId) {
+                itemDto.setStart(booking.getStart());
+                itemDto.setEnd(booking.getEnd());
+            }
+            result.add(itemDto);
         }
         log.info("Пользователь {} получил список своих вещей {}", userId, itemByOwnerId.size());
         return result;

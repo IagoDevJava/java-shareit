@@ -2,6 +2,9 @@ package ru.practicum.shareit.item.model;
 
 import ru.practicum.shareit.item.dto.ItemDto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ItemMapper {
     /**
      * Конвертирование Item в ItemDto
@@ -12,7 +15,7 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .request(item.getRequest() != null ? item.getRequest() : null)
+                .requestId(item.getRequestId() != null ? item.getRequestId() : null)
                 .build();
     }
 
@@ -26,7 +29,20 @@ public class ItemMapper {
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
                 .ownerId(userId)
-                .request(itemDto.getRequest() != null ? itemDto.getRequest() : null)
+                .requestId(itemDto.getRequestId() != null ? itemDto.getRequestId() : null)
                 .build();
+    }
+
+    /**
+     * Конвертация списка Item в ItemDto
+     */
+    public static List<ItemDto> mapToItemDto(Iterable<Item> items) {
+        List<ItemDto> result = new ArrayList<>();
+
+        for (Item item : items) {
+            result.add(toItemDto(item));
+        }
+
+        return result;
     }
 }

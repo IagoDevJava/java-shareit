@@ -1,52 +1,35 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
 @Service
-public class ItemService {
-    private final ItemDao itemDao;
-
-    @Autowired
-    public ItemService(ItemDao itemDao) {
-        this.itemDao = itemDao;
-    }
-
+public interface ItemService {
     /**
      * Добавление вещи в БД
      */
-    public ItemDto addItem(Long userId, ItemDto itemDto) {
-        return itemDao.addItem(userId, itemDto);
-    }
+    ItemDto addItem(Long userId, Item item);
 
     /**
      * Редактирование вещи в БД
      */
-    public ItemDto editItem(Long userId, Long itemId, ItemDto itemDto) {
-        return itemDao.editItem(userId, itemId, itemDto);
-    }
+    ItemDto editItem(Long userId, Long itemId, Item item);
 
     /**
      * Получение информации о вещи в БД
      */
-    public ItemDto getItemById(Long userId, Long itemId) {
-        return itemDao.getItemById(userId, itemId);
-    }
+    ItemDto getItemById(Long userId, Long itemId);
 
     /**
      * Получение владельцем списка его вещей в БД
      */
-    public List<ItemDto> getItems(Long userId) {
-        return itemDao.getItems(userId);
-    }
+    List<ItemDto> getItems(Long userId);
 
     /**
      * Поиск вещи потенциальным арендатором
      */
-    public List<ItemDto> getItemsByRequest(Long userId, String text) {
-        return itemDao.getItemsByRequest(userId, text);
-    }
+    List<ItemDto> getItemsByRequest(Long userId, String text);
 }

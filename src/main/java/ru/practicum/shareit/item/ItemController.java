@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -12,30 +13,29 @@ import java.util.List;
 @RestController
 @RequestMapping("/items")
 public class ItemController {
-    private final ItemService itemService;
+    private final ItemServiceImpl itemServiceImpl;
 
     @Autowired
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
+    public ItemController(ItemServiceImpl itemServiceImpl) {
+        this.itemServiceImpl = itemServiceImpl;
     }
 
     /**
      * Добавление вещи в БД
      */
     @PostMapping()
-    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Long userId, @Valid @RequestBody ItemDto itemDto) {
-        log.info("Добавляем вещь № {}", itemDto.getId());
-        return itemService.addItem(userId, itemDto);
+    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Long userId, @Valid @RequestBody Item item) {
+        log.info("Добавляем вещь № {}", item.getId());
+        return itemServiceImpl.addItem(userId, item);
     }
 
     /**
      * Редактирование вещи в БД
      */
     @PatchMapping("/{itemId}")
-    public ItemDto editItem(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId,
-                            @RequestBody ItemDto itemDto) {
-        log.info("Обновляем вещь № {}", itemDto.getId());
-        return itemService.editItem(userId, itemId, itemDto);
+    public ItemDto editItem(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId, @RequestBody Item item) {
+        log.info("Обновляем вещь № {}", item.getId());
+        return itemServiceImpl.editItem(userId, itemId, item);
     }
 
     /**
@@ -44,7 +44,7 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId) {
         log.info("Получаем вещь № {}", itemId);
-        return itemService.getItemById(userId, itemId);
+        return itemServiceImpl.getItemById(userId, itemId);
     }
 
     /**
@@ -53,7 +53,7 @@ public class ItemController {
     @GetMapping()
     public List<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Получаем список вещей пользователя № {} ", userId);
-        return itemService.getItems(userId);
+        return itemServiceImpl.getItems(userId);
     }
 
     /**
@@ -62,6 +62,6 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> getItemsByRequest(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestParam String text) {
         log.info("Запрашиваем список вещей по запросу {}", text);
-        return itemService.getItemsByRequest(userId, text);
+        return itemServiceImpl.getItemsByRequest(userId, text);
     }
 }

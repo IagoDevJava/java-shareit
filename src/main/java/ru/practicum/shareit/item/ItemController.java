@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 
 import javax.validation.Valid;
@@ -63,5 +64,15 @@ public class ItemController {
     public List<ItemDto> getItemsByRequest(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestParam String text) {
         log.info("Запрашиваем список вещей по запросу {}", text);
         return itemServiceImpl.getItemsByRequest(userId, text);
+    }
+
+    /**
+     * Добавление отзыва на вещь
+     */
+    @PostMapping("/items/{itemId}/comment")
+    public ItemDto addCommentToItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                    @PathVariable Long itemId,
+                                    @RequestBody Comment comment) {
+        return itemServiceImpl.addCommentToItem(userId, itemId, comment);
     }
 }

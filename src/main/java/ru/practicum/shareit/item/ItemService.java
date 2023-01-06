@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
@@ -32,4 +33,9 @@ public interface ItemService {
      * Поиск вещи потенциальным арендатором
      */
     List<ItemDto> getItemsByRequest(Long userId, String text);
+
+    /**
+     * Добавление отзыва на вещь
+     */
+    ItemDto addCommentToItem(Long userId, Long itemId, Comment comment);
 }

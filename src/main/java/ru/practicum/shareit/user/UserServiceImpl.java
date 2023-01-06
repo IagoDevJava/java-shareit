@@ -14,13 +14,13 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
-    private final UserRepository repository;
-    private final UserRepositoryImpl userRepository;
+    private final UserRepository userRepository;
+    private final UserRepositoryImpl userRepositoryImpl;
 
     @Autowired
-    public UserServiceImpl(UserRepository repository, UserRepositoryImpl userRepository) {
-        this.repository = repository;
+    public UserServiceImpl(UserRepository userRepository, UserRepositoryImpl userRepositoryImpl) {
         this.userRepository = userRepository;
+        this.userRepositoryImpl = userRepositoryImpl;
     }
 
     /**
@@ -28,8 +28,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDto saveUser(User user) {
-        User saveUser = repository.save(user);
-        log.info("Сохранили пользователя {}", user.getId());
+        User saveUser = userRepository.save(user);
+        UserValidator.isValidCreateUser(saveUser);
+        UserValidator.isDuplicateEmail(userRepository.findAll(), user);
+        log.info("Сохранили пользователя {}", saveUser.getName());
         return UserMapper.toUserDto(saveUser);
     }
 
@@ -38,7 +40,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDto updateUser(Long userId, User user) {
-        return userRepository.update(userId, user);
+        return userRepositoryImpl.update(userId, user);
     }
 
     /**
@@ -46,7 +48,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public List<UserDto> getUsers() {
-        List<User> allUser = repository.findAll();
+        List<User> allUser = userRepository.findAll();
         log.info("Вернули список из {} пользователей", allUser.size());
         return UserMapper.mapToUserDto(allUser);
     }
@@ -56,7 +58,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDto findUserById(Long userId) {
-        Optional<User> optUserById = repository.findById(userId);
+        Optional<User> optUserById = userRepository.findById(userId);
         if (optUserById.isPresent()) {
             User user = optUserById.get();
             log.info("Получили пользователя по id {}", userId);
@@ -73,7 +75,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUsers() {
         log.info("Удалили всех пользователей");
-        repository.deleteAll();
+        userRepository.deleteAll();
     }
 
     /**
@@ -82,6 +84,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserById(Long userId) {
         log.info("Удалили пользователя по id {}", userId);
-        repository.deleteById(userId);
+        userRepository.deleteById(userId);
     }
 }

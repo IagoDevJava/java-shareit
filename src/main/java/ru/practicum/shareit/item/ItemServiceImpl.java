@@ -7,7 +7,10 @@ import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exception.ItemNotFoundException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.model.CommentMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.user.UserValidator;
@@ -22,14 +25,17 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository repository;
     private final ItemRepositoryImpl itemRepository;
     private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
 
     @Autowired
     public ItemServiceImpl(ItemRepository repository,
                            ItemRepositoryImpl itemRepository,
-                           BookingRepository bookingRepository) {
+                           BookingRepository bookingRepository,
+                           CommentRepository commentRepository) {
         this.repository = repository;
         this.itemRepository = itemRepository;
         this.bookingRepository = bookingRepository;
+        this.commentRepository = commentRepository;
     }
 
     /**
@@ -39,8 +45,11 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto addItem(Long userId, Item item) {
         UserValidator.isValidIdUsers(userId);
         Item saveItem = repository.save(item);
+        List<Comment> commentsForItem = getCommentsForItem(item.getId());
+        ItemDto itemDto = ItemMapper.toItemDto(saveItem);
+        itemDto.setComments(CommentMapper.mapToCommentDto(commentsForItem));
         log.info("Вещь № {} добавлена", item.getId());
-        return ItemMapper.toItemDto(saveItem);
+        return itemDto;
     }
 
     /**
@@ -101,5 +110,25 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> getItemsByRequest(Long userId, String text) {
         List<Item> itemsByRequest = repository.findItemsByRequest(userId, text);
         return ItemMapper.mapToItemDto(itemsByRequest);
+    }
+
+    /**
+     * Добавление отзыва на вещь
+     */
+    @Override
+    public ItemDto addCommentToItem(Long userId, Long itemId, Comment comment) {
+        commentRepository.save(comment);
+        ItemDto itemById = getItemById(userId, itemId);
+        List<CommentDto> commentsThisItem = itemById.getComments();
+        commentsThisItem.add(CommentMapper.toCommentDto(comment));
+        itemById.setComments(commentsThisItem);
+        return itemById;
+    }
+
+    /**
+     * Получение отзывов по id вещи
+     */
+    private List<Comment> getCommentsForItem(Long itemId) {
+        return commentRepository.findCommentsByItemId(itemId);
     }
 }

@@ -24,7 +24,7 @@ public class UserController {
      */
     @PostMapping()
     public UserDto saveUser(@RequestBody User user) {
-        log.info("Добавляем пользователя");
+        log.info("Добавляем пользователя {}", user.getName());
         return userServiceImpl.saveUser(user);
     }
 

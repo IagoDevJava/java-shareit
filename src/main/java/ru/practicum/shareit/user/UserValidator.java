@@ -12,15 +12,6 @@ import java.util.List;
 @Slf4j
 public class UserValidator {
     /**
-     * Валидация пользователей при создании
-     */
-    public static void isValidCreateUser(User user) throws ValidationException {
-        isValidUserToNull(user);
-        isValidEmailUser(user);
-        isValidIdUsers(user.getId());
-    }
-
-    /**
      * Валидация пользователей при обновлении
      */
     public static void isValidUpdateUser(User user) throws ValidationException {
@@ -89,7 +80,7 @@ public class UserValidator {
     /**
      * Проверка на null имени и email пользователей при создании
      */
-    private static void isValidUserToNull(User user) {
+    public static void isValidUserToNull(User user) {
         if (user.getEmail() == null) {
             log.warn("Ошибка в email: {}", user);
             throw new ValidationException("Пользователь не соответствует условиям: " +

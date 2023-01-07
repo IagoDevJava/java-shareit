@@ -28,9 +28,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDto saveUser(User user) {
+        UserValidator.isValidUserToNull(user);
+        UserValidator.isValidEmailUser(user);
         User saveUser = userRepository.save(user);
-        UserValidator.isValidCreateUser(saveUser);
-        UserValidator.isDuplicateEmail(userRepository.findAll(), user);
         log.info("Сохранили пользователя {}", saveUser.getName());
         return UserMapper.toUserDto(saveUser);
     }

@@ -20,6 +20,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
      */
     @Query(value = "select * " +
             "from ITEMS as it " +
-            "where POSITION(?2 IN concat(LOWER(NAME), ' ', LOWER(DESCRIPTION))) > 0", nativeQuery = true)
+            "where POSITION(?2 IN concat(NAME, ' ', DESCRIPTION)) > 0", nativeQuery = true)
     List<Item> findItemsByRequest(Long id, String text);
 }

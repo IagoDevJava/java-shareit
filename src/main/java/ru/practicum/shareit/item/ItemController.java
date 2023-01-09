@@ -25,7 +25,7 @@ public class ItemController {
      * Добавление вещи в БД
      */
     @PostMapping()
-    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Long userId, @Valid @RequestBody Item item) {
+    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestBody Item item) {
         log.info("Добавляем вещь № {}", item.getId());
         return itemServiceImpl.addItem(userId, item);
     }

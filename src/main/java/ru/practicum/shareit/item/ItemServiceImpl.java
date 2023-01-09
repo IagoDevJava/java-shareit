@@ -7,12 +7,14 @@ import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exception.ItemNotFoundException;
+import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.CommentMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemMapper;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserValidator;
 
 import java.util.ArrayList;
@@ -26,16 +28,19 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepositoryImpl itemRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public ItemServiceImpl(ItemRepository repository,
                            ItemRepositoryImpl itemRepository,
                            BookingRepository bookingRepository,
-                           CommentRepository commentRepository) {
+                           CommentRepository commentRepository,
+                           UserRepository userRepository) {
         this.repository = repository;
         this.itemRepository = itemRepository;
         this.bookingRepository = bookingRepository;
         this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -44,12 +49,18 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto addItem(Long userId, Item item) {
         UserValidator.isValidIdUsers(userId);
-        Item saveItem = repository.save(item);
-        List<Comment> commentsForItem = getCommentsForItem(item.getId());
-        ItemDto itemDto = ItemMapper.toItemDto(saveItem);
-        itemDto.setComments(CommentMapper.mapToCommentDto(commentsForItem));
-        log.info("Вещь № {} добавлена", item.getId());
-        return itemDto;
+        if (userRepository.findById(userId).isPresent()) {
+            item.setOwnerId(userId);
+            ItemValidator.isValidCreateItem(item);
+            Item saveItem = repository.save(item);
+            List<Comment> commentsForItem = getCommentsForItem(item.getId());
+            ItemDto itemDto = ItemMapper.toItemDto(saveItem);
+            itemDto.setComments(CommentMapper.mapToCommentDto(commentsForItem));
+            log.info("Вещь № {} добавлена, owner {}", item.getId(), item.getOwnerId());
+            return itemDto;
+        } else {
+            throw new UserNotFoundException("Такого пользователя нет в базе");
+        }
     }
 
     /**
@@ -108,7 +119,8 @@ public class ItemServiceImpl implements ItemService {
      */
     @Override
     public List<ItemDto> getItemsByRequest(Long userId, String text) {
-        List<Item> itemsByRequest = repository.findItemsByRequest(userId, text);
+        String lowerText = text.toLowerCase();
+        List<Item> itemsByRequest = repository.findItemsByRequest(userId, lowerText);
         return ItemMapper.mapToItemDto(itemsByRequest);
     }
 

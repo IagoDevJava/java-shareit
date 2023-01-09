@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
-@Service
+//@Service
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final BookingRepositoryImpl repositoryImp;
